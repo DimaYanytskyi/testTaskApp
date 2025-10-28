@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RecordDto(
-    val id: Int? = null,
     val type: String,
     val text: String? = null,
     val picture: String? = null,

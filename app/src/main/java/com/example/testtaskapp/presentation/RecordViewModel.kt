@@ -1,6 +1,7 @@
 package com.example.testtaskapp.presentation
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -23,18 +24,36 @@ class RecordViewModel @Inject constructor(
 
     var loading by mutableStateOf(true)
     var error by mutableStateOf<String?>(null)
+    var recordIds by mutableStateOf<List<Int>>(emptyList())
+    var selectedId by mutableIntStateOf(1)
 
-    init { loadRandomRecord() }
+    init { loadIDs() }
 
-    private fun loadRandomRecord() {
+    private fun loadIDs() {
         viewModelScope.launch {
+            loading = true
             try {
-                val ids = getAllRecords()
-                val first = ids.random()
+                recordIds = getAllRecords()
+                val first = recordIds.first()
                 uiState = getRecordById(first)
             } catch (e: Exception) {
                 error = e.message
             } finally { loading = false }
+        }
+    }
+
+    fun loadRecordById(id: Int) {
+        viewModelScope.launch {
+            selectedId = id
+            loading = true
+            try {
+                val response = getRecordById(id)
+                uiState = response
+            } catch (e: Exception) {
+                error = e.message
+            } finally {
+                loading = false
+            }
         }
     }
 }

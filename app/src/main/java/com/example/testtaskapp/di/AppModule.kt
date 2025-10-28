@@ -5,37 +5,30 @@ import com.example.testtaskapp.data.repository.RecordRepositoryImpl
 import com.example.testtaskapp.domain.repository.RecordRepository
 import com.example.testtaskapp.domain.usecase.GetAllRecordsUseCase
 import com.example.testtaskapp.domain.usecase.GetRecordByIdUseCase
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
 
-    @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
         val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
         val client = OkHttpClient.Builder().addInterceptor(logging).build()
-        val json = Json { ignoreUnknownKeys = true }
-        val contentType = "application/json".toMediaType()
-
         return Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8000/")
             .client(client)
-            .addConverterFactory(json.asConverterFactory(contentType))
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 

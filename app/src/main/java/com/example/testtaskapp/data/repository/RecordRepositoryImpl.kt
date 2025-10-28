@@ -10,8 +10,7 @@ class RecordRepositoryImpl @Inject constructor(
 ) : RecordRepository {
     override suspend fun getAllIds(): List<Int> = api.getAllRecords()
 
-    override suspend fun getRecordById(id: Int): Record =
-        api.getRecord(id).let {
-            Record(it.id, it.type, it.text, it.picture, it.url)
-        }
+    override suspend fun getRecordById(id: Int): Record = api.getRecord(id).let {
+        Record(it.type, it.text, it.picture, it.url)
+    }
 }
